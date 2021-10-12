@@ -14,7 +14,8 @@ userSchema = new mongoose.Schema({
     physique:{
         height: Number,
         weight: Number,
-        bmi: Number
+        bmi: Number,
+        age: Number
     },
     favorite: [{
         type: mongoose.SchemaTypes.ObjectId,

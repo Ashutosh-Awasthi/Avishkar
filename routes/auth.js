@@ -5,9 +5,7 @@ const Item = require('../models/Item')
 const bcrypt = require('bcrypt')
 
 router.get('/',(req,res)=>{
-    User.find({},(err,fI)=>{
-        res.json(fI)
-    })
+    res.render('./auth/login')
 })
 
 router.get('/logout',(req,res)=>{
@@ -19,15 +17,16 @@ router.get('/logout',(req,res)=>{
 
 router.post('/login',(req,res)=>{
     const {email,password} = req.body;
+
     User.findOne({email},async(err,fUser)=>{
-        if(!err && await bcrypt.compare(password,fUser.password)){
+
+        if(!err && fUser && await bcrypt.compare(password,fUser.password)){
             const token = await jwt.sign({_id:fUser._id},process.env.JWT_SECRET)
             res.cookie("ACCESS_TOKEN",token,{
                 httpOnly: true
             });
             res.json({email: fUser.email})
         }else{
-            console.log(err)
             res.json(false);
         }
     })
@@ -37,8 +36,16 @@ router.post('/register',async(req,res)=>{
     const hash = await bcrypt.hash(req.body.password,10)
     const UserData = {
         password: hash,
-        email: req.body.email
+        email: req.body.email,
+        username: req.body.fname&&req.body.lname?req.body.fname + ' ' + req.body.lname:null,
+        physique: {
+            height: req.body.height,
+            weight: req.body.weight,
+            bmi: req.body.weight/(req.body.height*req.body.height*0.3048*0.3048),
+            age: req.body.age
+        }
     }
+
     User.create(UserData,async (err,nUser)=>{
         if(!err){
             console.log(nUser)
@@ -46,7 +53,7 @@ router.post('/register',async(req,res)=>{
             res.cookie("ACCESS_TOKEN",token,{
                 httpOnly: true
             });
-            res.json({email: nUser.email})
+            res.json(nUser)
         }else{
             console.log(err)
             res.json(false)

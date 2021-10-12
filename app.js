@@ -28,6 +28,10 @@ Item.collection.drop().then(()=>{
 app.use(express.urlencoded({extended: false}))
 app.use(cookieParser())
 app.use(cors())
+app.set('view engine','ejs')
+app.use(express.static('public'))
+
+
 //including the routes
 const authRoutes = require('./routes/auth')
 
