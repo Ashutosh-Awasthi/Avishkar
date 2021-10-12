@@ -2,7 +2,9 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
-const cookieParser = require('cookie-parser')  
+const cors = require('cors')
+const cookieParser = require('cookie-parser')
+const Item = require('./models/Item')  
 
 //database connection
 const DB_options = {
@@ -14,10 +16,18 @@ mongoose.connection.on('connected',()=>{
     console.log('Database Connected')
 })
 
+//adding demoData to the Dbase
+const items = require('./demoData')
+Item.collection.drop().then(()=>{
+    items.forEach(item=>{
+        Item.create(item)
+    })    
+})
+
 //other options
 app.use(express.urlencoded({extended: false}))
 app.use(cookieParser())
-
+app.use(cors())
 //including the routes
 const authRoutes = require('./routes/auth')
 

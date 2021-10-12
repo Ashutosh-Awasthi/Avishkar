@@ -1,10 +1,13 @@
 const router = require('express').Router()
 const jwt = require('jsonwebtoken')
 const User = require('../models/User')
+const Item = require('../models/Item')
 const bcrypt = require('bcrypt')
 
 router.get('/',(req,res)=>{
-    res.send('hello')
+    User.find({},(err,fI)=>{
+        res.json(fI)
+    })
 })
 
 router.get('/logout',(req,res)=>{
