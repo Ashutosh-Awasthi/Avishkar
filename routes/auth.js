@@ -3,8 +3,9 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/User')
 const Item = require('../models/Item')
 const bcrypt = require('bcrypt')
+const isAuth = require('../middleware/isAuth')
 
-router.get('/',(req,res)=>{
+router.get('/login',(req,res)=>{
     res.render('./auth/login')
 })
 
@@ -34,31 +35,39 @@ router.post('/login',(req,res)=>{
 
 router.post('/register',async(req,res)=>{
     const hash = await bcrypt.hash(req.body.password,10)
-    const UserData = {
-        password: hash,
-        email: req.body.email,
-        username: req.body.fname&&req.body.lname?req.body.fname + ' ' + req.body.lname:null,
-        physique: {
-            height: req.body.height,
-            weight: req.body.weight,
-            bmi: req.body.weight/(req.body.height*req.body.height*0.3048*0.3048),
-            age: req.body.age
+    if(!req.body.fname || !req.body.lname || !req.body.height || !req.body.weight)
+        res.json({message: 'feilds are required',result: false})
+    else{
+            const UserData = {
+            password: hash,
+            email: req.body.email,
+            username: req.body.fname + ' ' + req.body.lname,
+            physique: {
+                height: req.body.height,
+                weight: req.body.weight,
+                bmi: req.body.weight/(req.body.height*req.body.height*0.3048*0.3048),
+                age: req.body.age
+            }
         }
-    }
 
-    User.create(UserData,async (err,nUser)=>{
-        if(!err){
-            console.log(nUser)
-            const token = await jwt.sign({_id:nUser._id},process.env.JWT_SECRET)
-            res.cookie("ACCESS_TOKEN",token,{
-                httpOnly: true
-            });
-            res.json(nUser)
-        }else{
-            console.log(err)
-            res.json(false)
-        }
-    })
+        User.create(UserData,async (err,nUser)=>{
+            if(!err){
+                console.log(nUser)
+                const token = await jwt.sign({_id:nUser._id},process.env.JWT_SECRET)
+                res.cookie("ACCESS_TOKEN",token,{
+                    httpOnly: true
+                });
+                res.json(nUser)
+            }else{
+                console.log(err)
+                res.json(false)
+            }
+        })
+    }
+})
+
+router.get('/secret',isAuth,(req,res)=>{
+    res.json(req.app.locals.user)
 })
 
 module.exports = router

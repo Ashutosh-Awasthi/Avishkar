@@ -4,7 +4,11 @@ itemSchema = new mongoose.Schema({
     name: String,
     image: String,
     nutrients: Object,
-    calorie: Number
+    calorie: Number,
+    owner: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'user'
+    }
 })
 
-module.exports = mongoose.model('itme',itemSchema)
+module.exports = mongoose.model('item',itemSchema)

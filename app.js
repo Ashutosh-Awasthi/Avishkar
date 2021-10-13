@@ -34,8 +34,10 @@ app.use(express.static('public'))
 
 //including the routes
 const authRoutes = require('./routes/auth')
+const itemRoutes = require('./routes/item')
 
 app.use(authRoutes)
+app.use('/item',itemRoutes)
 
 app.listen(process.env.PORT,()=>{
     console.log(`running on port ${process.env.PORT}`)
