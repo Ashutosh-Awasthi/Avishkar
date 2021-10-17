@@ -35,9 +35,13 @@ app.use(express.static('public'))
 //including the routes
 const authRoutes = require('./routes/auth')
 const itemRoutes = require('./routes/item')
+const userRoutes = require('./routes/user')
+const nutritionApiRoutes = require('./routes/nutritionApi')
 
 app.use(authRoutes)
 app.use('/item',itemRoutes)
+app.use('/user',userRoutes)
+app.use('/nutrition',nutritionApiRoutes)
 
 app.listen(process.env.PORT,()=>{
     console.log(`running on port ${process.env.PORT}`)

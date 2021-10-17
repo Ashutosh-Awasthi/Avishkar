@@ -9,6 +9,10 @@ router.get('/login',(req,res)=>{
     res.render('./auth/login')
 })
 
+router.get('/',(req,res)=>{
+    res.send('Home')
+})
+
 router.get('/logout',(req,res)=>{
     res.cookie('ACCESS_TOKEN','',{
         maxAge: 1
