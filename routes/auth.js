@@ -1,77 +1,102 @@
 const router = require('express').Router()
-const jwt = require('jsonwebtoken')
-const User = require('../models/User')
-const Item = require('../models/Item')
-const bcrypt = require('bcrypt')
 const isAuth = require('../middleware/isAuth')
-
-router.get('/login',(req,res)=>{
-    res.render('./auth/login')
-})
+const { logout, login, register } = require('../controllers/auth')
+const User = require('../models/User')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+const transporter = require('../controllers/mailer')
 
 router.get('/',(req,res)=>{
     res.send('Home')
 })
 
-router.get('/logout',(req,res)=>{
-    res.cookie('ACCESS_TOKEN','',{
-        maxAge: 1
-    })
-    res.redirect('/')
+router.get('/login',(req,res)=>{
+    res.render('./auth/login',{info: req.flash('info')})
 })
 
-router.post('/login',(req,res)=>{
-    const {email,password} = req.body;
+router.get('/logout',logout)
 
-    User.findOne({email},async(err,fUser)=>{
+router.post('/login',login)
 
-        if(!err && fUser && await bcrypt.compare(password,fUser.password)){
-            const token = await jwt.sign({_id:fUser._id},process.env.JWT_SECRET)
-            res.cookie("ACCESS_TOKEN",token,{
-                httpOnly: true
-            });
-            res.json({email: fUser.email})
-        }else{
-            res.json(false);
+router.post('/register',register)
+
+router.get('/secret',(req,res)=>{
+    res.render('error')
+})
+
+//reset password
+router.get('/forget-pass',(req,res)=>{
+    res.render('./auth/forget',{info: req.flash('info')})
+})
+
+router.post('/forget-pass',(req,res)=>{
+    let {email} = req.body
+    User.findOne({email},async (err,fUser)=>{
+        if(!err && fUser){
+            let link = `http://localhost:8080/forget-pass/${fUser._id}/`
+            let token = await jwt.sign({_id: fUser._id},process.env.RESET_SECRET,{expiresIn: '60m'})
+            link = link + token
+
+            req.flash('info','Reset link has been sent to your email address')
+            res.send(link)
+            // res.redirect('/forget-pass')
+            // let mailOptions={
+            //     from: 'nitaawasthi88@gmail.com',
+            //     to: fUser.email,
+            //     subject: 'Password Reset Link',
+            //     text: 'Follow the link: '+link
+            // }
+            // transporter.sendMail(mailOptions,(err,data)=>{
+            //     if(!err)
+            //         res.send(link)
+            //     else
+            //         res.send('not send')
+            // })
         }
     })
 })
 
-router.post('/register',async(req,res)=>{
-    const hash = await bcrypt.hash(req.body.password,10)
-    if(!req.body.fname || !req.body.lname || !req.body.height || !req.body.weight)
-        res.json({message: 'feilds are required',result: false})
-    else{
-            const UserData = {
-            password: hash,
-            email: req.body.email,
-            username: req.body.fname + ' ' + req.body.lname,
-            physique: {
-                height: req.body.height,
-                weight: req.body.weight,
-                bmi: req.body.weight/(req.body.height*req.body.height*0.3048*0.3048),
-                age: req.body.age
+router.get('/forget-pass/:id/:key',(req,res)=>{
+    User.findById(req.params.id,async(err,fUser)=>{
+        if(!err && fUser){
+            try{
+                await jwt.verify(req.params.key,process.env.RESET_SECRET)
+                res.render('./auth/newpass',{link: `/forget-pass/${req.params.id}/${req.params.key}`})
+            }catch{
+                res.send('cannot change')
             }
-        }
 
-        User.create(UserData,async (err,nUser)=>{
-            if(!err){
-                console.log(nUser)
-                const token = await jwt.sign({_id:nUser._id},process.env.JWT_SECRET)
-                res.cookie("ACCESS_TOKEN",token,{
-                    httpOnly: true
-                });
-                res.json(nUser)
+        }else{
+            res.send('cannot change')
+        }
+    })
+})
+
+router.put('/forget-pass/:id/:key',(req,res)=>{
+    let {password,cpassword} = req.body
+    
+    if(cpassword!==password)
+        res.redirect('back')
+
+    else
+        User.findById(req.params.id,async(err,fUser)=>{
+            if(!err && fUser){
+                try{
+                    await jwt.verify(req.params.key,process.env.RESET_SECRET)
+                    let hash = await bcrypt.hash(password,10)
+                    fUser.password = hash
+                    fUser.save()
+
+                    req.flash('info','Password has been successfully reset')
+                    res.redirect('/login')
+                }catch{
+                    res.send('cannot change')
+                }
+
             }else{
-                console.log(err)
-                res.json(false)
+                res.send('cannot change')
             }
         })
-    }
-})
-
-router.get('/secret',isAuth,(req,res)=>{
-    res.json(req.app.locals.user)
 })
 
 module.exports = router

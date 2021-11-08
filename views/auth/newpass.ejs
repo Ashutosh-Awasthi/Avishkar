@@ -1,0 +1,42 @@
+<%- include('../partials/header') %>
+<title>Password Reset</title>
+</head>
+<body>
+
+<body>
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+            <div class="col-10 col-md-6">
+                <form action="<%= link %>?_method=PUT" method="post" class='container'
+                style="
+                    padding: 30px;
+                    box-shadow:0 2px 2px;
+                    border-radius: 5px;
+                    border: 1px solid black;
+                    margin-top: 10rem;
+                ">
+                    <div class="mb-3">
+                      <input type="password" class="form-control" placeholder='create new password' name="password">
+                    </div>
+                    <div class="mb-3">
+                      <input type="password" class="form-control" placeholder='confirm password' name="cpassword">
+                    </div>
+                    <button type="submit" class="btn btn-secondary">Reset</button>
+                  </form>
+
+            </div>
+        </div>
+    </div> 
+
+    <script>
+        const [p,cp] = document.querySelectorAll('input')
+        const btn = document.querySelector('button')
+
+        btn.addEventListener('click',(e)=>{
+            if(p.value!==cp.value){
+                alert("Incorrect Confirm password")
+                e.preventDefault()
+            }
+        })
+    </script>
+<%- include('../partials/footer') %>

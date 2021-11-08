@@ -1,4 +1,17 @@
+<link rel="stylesheet" href="/user/diet.css">
+
 <div class="container">
+    <select class="form-select form-select-sm mb-3" aria-label=".form-select-lg example">
+        <option selected value='0'>Same all day</option>
+        <option value="1">Monday</option>
+        <option value="2">Tuesday</option>
+        <option value="3">Wednesday</option>
+        <option value="4">Thursday</option>
+        <option value="5">Friday</option>
+        <option value="6">Saturday</option>
+        <option value="7">Sunday</option>
+    </select>
+
     <div class="input-group mb-3">
         <input type="text" class="form-control" placeholder="breakfast" id='breakfast'>
         <button class="btn btn-sm btn-outline-secondary" id='morning'>Search</button>
@@ -12,55 +25,26 @@
         <button class="btn btn-sm btn-outline-secondary" id='evening'>Search</button>
     </div>
     <div class="res col-lg-7 col-10">
-        <p>Search Results</p>
+        <div>Search Results</div>
+        <hr>
     </div>
     <p>Your Diet Plan</p>
 
-    <div class='container row d-flex'>
+    <div class='container row d-flex justify-content-between'>
         <div class="col-12 col-lg-4 breakfast">
-            <p class='text-muted'>Morning</p>
-
+            <div class='text-muted'>Morning</div>
+            <hr>
         </div>
         <div class="col-12 col-lg-4 lunch">
-            <p class='text-muted'>Noon</p>
-
+            <div class='text-muted'>Noon</div>
+            <hr>
         </div>
         <div class="col-12 col-lg-4 dinner">
-            <p class='text-muted'>Evening</p>
-
+            <div class='text-muted'>Evening</div>
+            <hr>
         </div>
     </div>
 
-    <!-- <div class="container-fluid">
-        <h4>Add food to you diet</h4>
-
-        <form action="/">
-            <input type="text" id='morning' placeholder="morning">
-            <input type="text" id='noon' placeholder="noon">
-            <input type="text" id='evening' placeholder="evening">
-        </form>
-    </div>
-
-    <div class="container-fluid">
-        <div class="row d-flex justify-content-around">
-            <div class="res col-lg-7 col-10">
-                <p>Search Results</p>
-            </div>
-            <div class="col-lg-4 col-10">
-                    <div class="breakfast row">
-                        <p>Breakfast</p>
-                    </div>
-                    <div class="lunch row">
-                        <p>Lunch</p>
-                    </div>
-                    <div class="dinner row">
-                        <p>Dinner</p>
-                    </div>
-            </div>
-        </div>
-    </div> -->
-
-    <h4 class="tC">Total daily Calories: </h4>
 
 <script src="/user/diet.js"></script>
 </div>

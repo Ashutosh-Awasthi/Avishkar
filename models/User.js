@@ -21,7 +21,26 @@ userSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.ObjectId,
         ref: 'Item'
     }],
-    target: Object
+    
+    image: {
+        data: Buffer,
+        contentType: String
+    },
+
+    plan:{
+        breakfast: [{
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: 'item'
+        }],
+        lunch: [{
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: 'item'
+        }],
+        dinner: [{
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: 'item'
+        }]
+    }
 })
 
 module.exports = mongoose.model('user',userSchema)

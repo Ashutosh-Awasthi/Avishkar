@@ -4,33 +4,35 @@ const User = require('../models/User')
 const Item = require('../models/Item')
 const bcrypt = require('bcrypt')
 const isAuth = require('../middleware/isAuth')
-
-//get specific item
-router.get('/:id',(req,res)=>{
-    Item.findById(req.params.id,(err,fItem)=>{
-        if(!err && fItem)
-            res.json(fItem)
-        else
-            res.json({message: 'Item not found', result: false})
-    })
-})
+const { default: axios } = require('axios')
 
 //get all items
 router.get('/',(req,res)=>{
+
     Item.find({},(err,data)=>{
         if(!err && data)
-            res.json(data)
+            res.render('./items/main',{data})
+            // res.json(data)
         else
             res.json({message: 'Items not found', result: false})
     })
 })
 
 //create item
-router.post('/create',isAuth,(req,res)=>{
+router.get('/create',isAuth,(req,res)=>{
+    res.render('./items/new')
+})
+
+router.post('/',isAuth,(req,res)=>{
+    console.log(req.body)
     const data = {
         name: req.body.name,
         image: req.body.image,
-        nutrients: {},
+        nutrients: {
+            iron: req.body.iron,
+            calcium: req.body.calcium,
+            vitamins: req.body.vitamins
+        }, 
         calorie: req.body.calorie,
         owner: req.app.locals.user._id
     } 
@@ -56,7 +58,7 @@ router.delete('/:id/delete',isAuth,(req,res)=>{
 })
 
 //like item
-router.post('/:id/like',isAuth,async (req,res)=>{
+router.get('/:id/like',isAuth,async (req,res)=>{
     try{
         User.findById(req.app.locals.user._id,(err,fUser)=>{
             console.log(fUser)
@@ -64,14 +66,24 @@ router.post('/:id/like',isAuth,async (req,res)=>{
                 Item.findOne({_id: req.params.id},async (err,fItem)=>{
                     fUser.favorite.push(fItem)
                     await fUser.save()
-                    res.json(true)
+                    res.json({result:true})
             })}
             else
-                res.json(false)
+                res.json({message: 'failed to like', result: false})
         })
     }catch{
         res.json({message: 'failed to like', result: false})
     } 
+})
+
+//get specific item
+router.get('/:id',(req,res)=>{
+    Item.findById(req.params.id,(err,fItem)=>{
+        if(!err && fItem)
+            res.render('./items/show',{data: fItem})
+        else
+            res.json({message: 'Item not found', result: false})
+    })
 })
 
 module.exports = router

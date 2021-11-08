@@ -1,0 +1,35 @@
+<div class="container">
+
+    <% if (info.length) { %>
+        <div class="alert alert-danger success alert-dismissible fade show p-0 mt-1 text-center" role="alert">
+            <%= info %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
+            style="
+                font-size: .75rem;
+                padding: 7px 10px;
+            "></button>
+        </div>
+    <% } %>
+
+        <div class="img d-flex justify-content-around" height='400px' width='100%'>
+            <% if (data.image.data) { %>
+                <img src="data:img/gif;base64,<%= data.image.data.toString('base64') %>" style="max-height: 400px; max-width: 100%; margin: auto;">
+                <% }else{ %>
+                    <img src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                    style="max-height: 400px; max-width: 100%; margin: auto">
+            <% } %>
+        </div>
+
+
+                <form action="/user/<%= data._id %>/photo?_method=PUT" method="post" enctype="multipart/form-data" class='mt-4'>
+                    <div class="row d-flex justify-content-around">
+                        <div class="col-12 col-lg-6">
+                            <input type="file" name='file' class='form-control'>
+                        </div>
+                        <div class="col">
+                            <button class='btn btn-outline-secondary'>Change Image</button>
+                        </div>
+                    </div>
+
+                </form>
+</div>

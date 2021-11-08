@@ -1,27 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <script src="https://kit.fontawesome.com/b842251e07.js" crossorigin="anonymous"></script>
-    <title>Dashboard</title>
+<%- include('../partials/header') %>
+<title>Dashboard</title>
 </head>
 <body>
 
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
         <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Foodie</a>
-        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#demo">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
         <div class="navbar-nav">
           <div class="nav-item text-nowrap">
-            <a class="nav-link px-3" href="/logout">Sign out</a>
+            <a class="nav-link px-3" id='logout' href="/logout">Sign out</a>
           </div>
         </div>
       </header>
+
+  
 
       <div class="container-fluid">
         <div class="row">
@@ -29,9 +23,16 @@
             <div class="position-sticky pt-3">
               <ul class="nav flex-column">
                 <li class="nav-item">
+                  <a href="/user/<%= data._id %>/photo">
+                  <% if (data.image.data) { %>
+                    <img src="data:img/gif;base64,<%= data.image.data.toString('base64') %>" height="225px" width="100%" class="img-thumbnail">
+                  <% }else{ %>
                     <img src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" height="100px" width="100%" class="img-thumbnail">
+                  <% } %>
+                  </a>
                 </li>
-                
+                <hr>
+                    
                 <li class="nav-item">
                   <a class="nav-link" aria-current="page" href="/user">
                     <span data-feather="home"></span>
@@ -42,6 +43,12 @@
                   <a class="nav-link" href="#">
                     <span data-feather="file"></span>
                     Food
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/user/foodwiki">
+                    <span data-feather="file"></span>
+                    Foodwiki
                   </a>
                 </li>
                 <li class="nav-item">
@@ -66,7 +73,7 @@
               </h6>
               <ul class="nav flex-column mb-2">
                 <li class="nav-item">
-                  <a class="nav-link" href="#">
+                  <a class="nav-link" href="/">
                     <span data-feather="file-text"></span>
                     Home
                   </a>
@@ -77,10 +84,12 @@
       
           <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-              <h1 class="h2"><%= component.toUpperCase() %> </h1>
+              <h1 class="h2"><%= component[0].toUpperCase()+component.slice(1) %> </h1>
               <% if (component==='profile') { %>
                 <a href="/user/<%= data._id %>/update " class="btn btn-sm btn-outline-secondary">Update</a>
-              <% } %>
+              <% }else if(component==='diet'){ %>
+                <a href="#" class="btn btn-sm btn-outline-secondary" id='set'>Set Plan</a>
+              <% } %> 
             </div>
             
             <% if (component==='item') { %>
@@ -93,8 +102,13 @@
                 <%- include('./diet',{...data}) %> 
             <% }else if(component==='update'){ %>
                 <%- include('./update',{...data}) %> 
+            <% }else if(component==='avatar'){ %>
+                <%- include('./avatar',{...data,info})  %> 
+            <% }else if(component==='foodwiki'){ %>
+                <%- include('./foodwiki',{...data}) %> 
             <% } %> 
-            <!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas> -->
+
+            <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
     
           </main>
         </div>
@@ -102,11 +116,4 @@
       
 
 
-    
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
-</body>
-</html>
+<%- include('../partials/footer') %>

@@ -12,12 +12,12 @@ const isAuth= async(req,res,next)=>{
                 next()
             }else{
                 console.log(err)
-                res.json({message: 'Not authorised', result: false})
+                res.redirect('/login')
             }
         })
     }catch(e){
         console.log(e)
-        res.json({message: 'Not authorised', result: false})
+        res.redirect('/login')
     }
 }
 module.exports = isAuth
