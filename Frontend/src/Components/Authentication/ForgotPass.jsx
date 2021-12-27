@@ -1,4 +1,6 @@
 import React, { useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
+import {toast} from 'react-toastify'
 
 const Styles = {
     bg: {
@@ -12,13 +14,41 @@ const Styles = {
 
 const ForgotPass = () => {
     const email = useRef()
+    const navigate = useNavigate()
 
     const resetHandeler = e => {
         e.preventDefault()
         if (email.current.value === '')
             alert("email address required")
         else
-            document.querySelector('form').submit()
+            fetch('/forget-pass', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify({email:email.current.value}),
+            }).then(response => response.json()).then(data => {
+                if(data.result){
+                    toast.success('Reset link has been sent successfully to your account',{
+                        position: "top-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        progress: undefined,
+                    });
+                }else{
+                    toast.error('Try again later', {
+                        position: "top-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        progress: undefined,
+                    });
+                }
+                navigate('/login')
+            })
     }
 
     useEffect(() => {

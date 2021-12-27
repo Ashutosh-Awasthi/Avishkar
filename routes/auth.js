@@ -31,15 +31,16 @@ router.get('/forget-pass',(req,res)=>{
 
 router.post('/forget-pass',(req,res)=>{
     let {email} = req.body
+    // console.log(email)
     User.findOne({email},async (err,fUser)=>{
         if(!err && fUser){
-            let link = `http://localhost:8080/forget-pass/${fUser._id}/`
+            let link = ` https://foodiehealth.herokuapp.com/${fUser._id}/`
             let token = await jwt.sign({_id: fUser._id},process.env.RESET_SECRET,{expiresIn: '60m'})
             link = link + token
 
             // req.flash('info','Reset link has been sent to your email address')
             // res.send(link)
-            res.redirect('/forget-pass')
+            // res.redirect('/forget-pass')
             let mailOptions={
                 from: 'noreplytestuser01@gmail.com',
                 to: fUser.email,
@@ -48,11 +49,11 @@ router.post('/forget-pass',(req,res)=>{
             }
             transporter.sendMail(mailOptions,(err,data)=>{
                 if(!err){
-                    res.send(link)
+                    res.json({result: true, message: "Message has been sent"})
                 }
                 else{
                     console.log(err)
-                    res.send('not send')
+                    res.json({result: false, message: "Message has not been sent"})
                 }
             })
         }
