@@ -45,6 +45,10 @@ app.use('/item',itemRoutes)
 app.use('/user',userRoutes)
 app.use('/nutrition',nutritionApiRoutes)
 
+if(process.env.NODE_ENV === 'production'){
+    app.use(express.static('./Frontend/build'))
+}
+
 app.listen(process.env.PORT,()=>{
     console.log(`running on port ${process.env.PORT}`)
 })
