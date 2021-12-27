@@ -47,6 +47,10 @@ app.use('/nutrition',nutritionApiRoutes)
 
 if(process.env.NODE_ENV === 'production'){
     app.use(express.static('./Frontend/build'))
+
+    app.get('*', (req, res) => {
+        res.sendFile('./Frontend/build/index.html')
+    })
 }
 
 app.listen(process.env.PORT,()=>{
