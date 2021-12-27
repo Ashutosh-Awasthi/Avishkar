@@ -6,16 +6,14 @@ const login = (req,res)=>{
     const {email,password} = req.body;
 
     User.findOne({email},async(err,fUser)=>{
-
         if(!err && fUser && await bcrypt.compare(password,fUser.password)){
             const token = await jwt.sign({_id:fUser._id},process.env.JWT_SECRET)
             res.cookie("ACCESS_TOKEN",token,{
                 httpOnly: true
             });
-            res.redirect('/user')
+            res.json({result: true,user: fUser})
         }else{
-            req.flash('info','Invalid credentials')
-            res.redirect('/login')
+            res.json({result:false, message:'Incorrect login id or password'})
         }
     })
 }
@@ -44,10 +42,11 @@ const register = async(req,res)=>{
                 res.cookie("ACCESS_TOKEN",token,{
                     httpOnly: true
                 });
-                res.redirect('/user')
+                // res.redirect('/user')
+                res.json({result:true,user: nUser});
             }else{
                 console.log(err)
-                res.json(false)
+                res.json({result:false, message: 'some error occurred'})
             }
         })
     }
@@ -57,7 +56,8 @@ const logout = (req,res)=>{
     res.cookie('ACCESS_TOKEN','',{
         maxAge: 1
     })
-    res.redirect('/login')
+    // res.redirect('/login')
+    res.json({result: true})
 }
 
 module.exports = {login,register,logout}

@@ -3,6 +3,7 @@ const isAuth = require('../middleware/isAuth')
 const upload = require('../middleware/upload')
 const { default: axios } = require('axios')
 const { profileUpdate, photoUpdate } = require('../controllers/user')
+const User = require('../models/User')
 
 //adding daily meal
 router.post('/daily',isAuth,(req,res)=>{
@@ -21,6 +22,8 @@ router.post('/daily',isAuth,(req,res)=>{
 
 // main dashboard
 router.get('/',isAuth,(req,res)=>{
+    const d= req.app.locals.user.image
+    console.log(d)
     res.render('./user/main',{data: req.app.locals.user, component: 'profile'})
 })
 
@@ -41,7 +44,7 @@ router.get('/:id/update',isAuth,(req,res)=>{
     res.render('./user/main',{data: req.app.locals.user, component: 'update'})
 })
 
-router.put('/:id',isAuth,profileUpdate)
+router.post('/:id',isAuth,profileUpdate)
 
 //profile photo
 router.get('/:id/photo',isAuth,(req,res)=>{
@@ -49,6 +52,14 @@ router.get('/:id/photo',isAuth,(req,res)=>{
 })
 
 router.put('/:id/photo',isAuth,upload.single('file'),photoUpdate)
+
+router.get('/getuser',isAuth,(req,res)=>{
+    res.json(req.app.locals.user)
+})
+
+router.get('/isloggedin',isAuth,(req,res)=>{
+    res.json({result: true})
+})
 
 
 module.exports = router

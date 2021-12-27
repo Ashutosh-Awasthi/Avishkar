@@ -8,6 +8,7 @@ const Item = require('./models/Item')
 const methodOverride = require('method-override')  
 const session = require('express-session')
 const flash = require('connect-flash')
+const feed = require('./feed') 
 
 //database connection
 const DB_options = {
@@ -20,12 +21,13 @@ mongoose.connection.on('connected',()=>{
 })
 
 //adding demoData to the Dbase
-const items = require('./demoData')
-Item.collection.drop().then(()=>{
-    items.forEach(item=>{
-        Item.create(item)
-    })    
-})
+// const items = require('./demoData')
+// Item.collection.drop().then(()=>{
+//     items.forEach(item=>{
+//         Item.create(item)
+//     })    
+// })
+feed()
 
 //other options
 app.use(express.urlencoded({extended: false}))

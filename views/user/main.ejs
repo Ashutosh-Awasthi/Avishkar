@@ -25,7 +25,7 @@
                 <li class="nav-item">
                   <a href="/user/<%= data._id %>/photo">
                   <% if (data.image.data) { %>
-                    <img src="data:img/gif;base64,<%= data.image.data.toString('base64') %>" height="225px" width="100%" class="img-thumbnail">
+                    <img src="data:img/gif;base64,<%= data.image.data %>" height="225px" width="100%" class="img-thumbnail">
                   <% }else{ %>
                     <img src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" height="100px" width="100%" class="img-thumbnail">
                   <% } %>

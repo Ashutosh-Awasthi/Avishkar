@@ -11,7 +11,7 @@ router.get('/',(req,res)=>{
 })
 
 router.get('/login',(req,res)=>{
-    res.render('./auth/login',{info: req.flash('info')})
+    res.redirect(`${process.env.FRNT+'login'}`)
 })
 
 router.get('/logout',logout)
@@ -37,21 +37,24 @@ router.post('/forget-pass',(req,res)=>{
             let token = await jwt.sign({_id: fUser._id},process.env.RESET_SECRET,{expiresIn: '60m'})
             link = link + token
 
-            req.flash('info','Reset link has been sent to your email address')
-            res.send(link)
-            // res.redirect('/forget-pass')
-            // let mailOptions={
-            //     from: 'nitaawasthi88@gmail.com',
-            //     to: fUser.email,
-            //     subject: 'Password Reset Link',
-            //     text: 'Follow the link: '+link
-            // }
-            // transporter.sendMail(mailOptions,(err,data)=>{
-            //     if(!err)
-            //         res.send(link)
-            //     else
-            //         res.send('not send')
-            // })
+            // req.flash('info','Reset link has been sent to your email address')
+            // res.send(link)
+            res.redirect('/forget-pass')
+            let mailOptions={
+                from: 'noreplytestuser01@gmail.com',
+                to: fUser.email,
+                subject: 'Password Reset Link',
+                text: 'Follow the link: '+link
+            }
+            transporter.sendMail(mailOptions,(err,data)=>{
+                if(!err){
+                    res.send(link)
+                }
+                else{
+                    console.log(err)
+                    res.send('not send')
+                }
+            })
         }
     })
 })
@@ -87,7 +90,7 @@ router.put('/forget-pass/:id/:key',(req,res)=>{
                     fUser.password = hash
                     fUser.save()
 
-                    req.flash('info','Password has been successfully reset')
+                    // req.flash('info','Password has been successfully reset')
                     res.redirect('/login')
                 }catch{
                     res.send('cannot change')
